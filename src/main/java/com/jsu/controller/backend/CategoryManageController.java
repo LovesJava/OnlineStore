@@ -39,14 +39,14 @@ public class CategoryManageController {
     public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null){
-            return ServerResponse.createByErrorCodeMeesage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
         }
         //校验当前用户是否为管理员
         if (iUserService.checkAdminRole(user).isSuccess()){
             //是管理员-->增加处理商品分类的处理逻辑
             return iCategoryService.addCategory(categoryName, parentId);
         } else {
-            return ServerResponse.createByErrorMeesage("无权限操作，需要管理员权限");
+            return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
     }
 
@@ -63,14 +63,14 @@ public class CategoryManageController {
     public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categoryName){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null){
-            return ServerResponse.createByErrorCodeMeesage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
         }
         //校验当前用户是否为管理员
         if (iUserService.checkAdminRole(user).isSuccess()){
             //是管理员-->更新categoryName的处理逻辑
             return iCategoryService.updateCategoryName(categoryId, categoryName);
         } else {
-            return ServerResponse.createByErrorMeesage("无权限操作，需要管理员权限");
+            return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
     }
 
@@ -86,14 +86,14 @@ public class CategoryManageController {
     public ServerResponse getChildrenParallelCategory(HttpSession session,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null){
-            return ServerResponse.createByErrorCodeMeesage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
         }
         //校验当前用户是否为管理员
         if (iUserService.checkAdminRole(user).isSuccess()){
             //是管理员-->查询子节点的category信息,保持平级
             return iCategoryService.getChildrenParallelCategory(categoryId);
         } else {
-            return ServerResponse.createByErrorMeesage("无权限操作，需要管理员权限");
+            return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
     }
 
@@ -109,14 +109,14 @@ public class CategoryManageController {
     public ServerResponse getCategoryAndDeepChildrenCategory(HttpSession session,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null){
-            return ServerResponse.createByErrorCodeMeesage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
         }
         //校验当前用户是否为管理员
         if (iUserService.checkAdminRole(user).isSuccess()){
             //是管理员-->查询当前节点的id和递归子节点的id
             return iCategoryService.selectCategoryAndChildrenById(categoryId);
         } else {
-            return ServerResponse.createByErrorMeesage("无权限操作，需要管理员权限");
+            return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
     }
 

@@ -79,12 +79,12 @@ public class ServerResponse<T> implements Serializable {
     }
 
     //创建响应失败的响应对象,并包含响应信息和状态码
-    public static <T> ServerResponse<T> createByErrorMeesage(String ErrorMessage){
+    public static <T> ServerResponse<T> createByErrorMessage(String ErrorMessage){
         return new ServerResponse<>(ResponseCode.ERROR.getCode(),ErrorMessage);
     }
 
     //创建响应失败的响应对象,并包含传入的响应信息和状态码
-    public static <T> ServerResponse<T> createByErrorCodeMeesage(int errorCode, String ErrorMessage){
+    public static <T> ServerResponse<T> createByErrorCodeMessage(int errorCode, String ErrorMessage){
         return new ServerResponse<>(errorCode,ErrorMessage);
     }
 }

@@ -91,7 +91,7 @@ public class UserController {
         if (user != null){
             return ServerResponse.createBySuccess(user);
         }
-        return ServerResponse.createByErrorMeesage("用户未登录，无法获取当前用户的信息");
+        return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
     }
 
     /**
@@ -147,7 +147,7 @@ public class UserController {
     public ServerResponse<String> resetPassword(HttpSession session, String passwordOld, String passwordNew){
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null){
-            return ServerResponse.createByErrorMeesage("用户未登录，请登录之后再操作");
+            return ServerResponse.createByErrorMessage("用户未登录，请登录之后再操作");
         }
         return iUserService.resetPassword(passwordOld, passwordNew, user);
     }
@@ -164,7 +164,7 @@ public class UserController {
     public ServerResponse<User> updateInformation(HttpSession session, User user){
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null){
-            return ServerResponse.createByErrorMeesage("用户未登录，请登录之后再操作");
+            return ServerResponse.createByErrorMessage("用户未登录，请登录之后再操作");
         }
         user.setId(currentUser.getId());
         user.setUsername(currentUser.getUsername());
@@ -186,7 +186,7 @@ public class UserController {
     public ServerResponse<User> getInformation(HttpSession session){
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null){
-            return ServerResponse.createByErrorCodeMeesage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，需要强制登录");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，需要强制登录");
         }
         return iUserService.getInformation(currentUser.getId());
     }

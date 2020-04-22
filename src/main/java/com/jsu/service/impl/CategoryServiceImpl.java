@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements ICategoryService {
     //添加商品分类
     public ServerResponse addCategory(String categoryName, Integer parentId){
         if (parentId == null || StringUtils.isBlank(categoryName)){
-            return ServerResponse.createByErrorMeesage("添加商品分类的参数错误");
+            return ServerResponse.createByErrorMessage("添加商品分类的参数错误");
         }
         Category category = new Category();
         category.setName(categoryName);
@@ -38,12 +38,12 @@ public class CategoryServiceImpl implements ICategoryService {
         if (rowCount > 0){
             return ServerResponse.createBySuccess("添加商品分类成功");
         }
-        return ServerResponse.createByErrorMeesage("添加商品分类失败");
+        return ServerResponse.createByErrorMessage("添加商品分类失败");
     }
 
     public ServerResponse updateCategoryName(Integer categoryId, String categoryName){
         if (categoryId == null || StringUtils.isBlank(categoryName)){
-            return ServerResponse.createByErrorMeesage("更新商品品类的参数错误");
+            return ServerResponse.createByErrorMessage("更新商品品类的参数错误");
         }
         Category category = new Category();
         category.setId(categoryId);
@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (rowCount > 0){
             return ServerResponse.createBySuccess("更新商品分类名称成功");
         }
-        return ServerResponse.createByErrorMeesage("更新商品分类名称失败");
+        return ServerResponse.createByErrorMessage("更新商品分类名称失败");
     }
 
     public ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId){
@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     //通过递归查询，获取当前节点的所有子节点，及子节点的子节点
-    public ServerResponse selectCategoryAndChildrenById(Integer categoryId){
+    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId){
         Set<Category> categorySet = Sets.newHashSet();
         findChildCategory(categorySet,categoryId);
         List<Integer> categoryIdList = Lists.newArrayList();

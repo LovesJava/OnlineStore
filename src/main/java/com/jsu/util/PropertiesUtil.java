@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
+//用于获取mall.properties文件的键值对
 public class PropertiesUtil {
 
     //创建当前类的日志对象

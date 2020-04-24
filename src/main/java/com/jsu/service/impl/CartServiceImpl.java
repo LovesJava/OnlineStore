@@ -169,6 +169,7 @@ public class CartServiceImpl implements ICartService {
         return cartVo;
     }
 
+    //判断购物车内商品是否为全选状态
     private boolean getAllCheckedStatus(Integer userId){
         if (userId == null){
             return false;

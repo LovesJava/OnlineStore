@@ -24,4 +24,10 @@ public class ICategoryServiceTest {
 
         categoryMapper.insert(category);
     }
+
+    @Test
+    public void listTest(){
+        Category category = categoryMapper.selectByPrimaryKey(10001);
+        System.out.println(category);
+    }
 }

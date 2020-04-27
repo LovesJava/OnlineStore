@@ -3,7 +3,6 @@
 #package file
 *.war
 *.ear
-*.jar
 
 #maven ignore
 target/
@@ -16,6 +15,7 @@ target/
 #idea
 .idea/
 /idea/
+out/
 *.ipr
 *.iml
 *.iws

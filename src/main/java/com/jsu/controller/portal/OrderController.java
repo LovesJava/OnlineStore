@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,94 @@ public class OrderController {
 
     @Autowired
     private IOrderService iOrderService;
+
+    /**
+     * 创建订单接口
+     * @param session 会话对象
+     * @param shippingId 收获地址id
+     * @return 通用响应对象
+     * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
+     */
+    @RequestMapping("create.do")
+    @ResponseBody
+    public ServerResponse create(HttpSession session, Integer shippingId){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null){ //判断当前用户是否已经登陆
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.createOrder(user.getId(), shippingId);
+    }
+
+    /**
+     * 取消订单（此接口只能取消未付款的订单）
+     * @param session 会话对象
+     * @param orderNo 订单号
+     * @return 通用响应对象
+     * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
+     */
+    @RequestMapping("cancel.do")
+    @ResponseBody
+    public ServerResponse cancel(HttpSession session, Long orderNo){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null){ //判断当前用户是否已经登陆
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.cancel(user.getId(), orderNo);
+    }
+
+    /**
+     * 获取购物车中被选中的商品详情
+     * @param session 会话对象
+     * @return 通用响应对象
+     * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
+     */
+    @RequestMapping("get_order_cart_product.do")
+    @ResponseBody
+    public ServerResponse getOrderCartProduct(HttpSession session){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null){ //判断当前用户是否已经登陆
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderCartProduct(user.getId());
+    }
+
+
+    /**
+     * 获取订单详情
+     * @param session 会话对象
+     * @param orderNo 订单号
+     * @return 通用响应对象
+     * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
+     */
+    @RequestMapping("detail.do")
+    @ResponseBody
+    public ServerResponse detail(HttpSession session, Long orderNo){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null){ //判断当前用户是否已经登陆
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderDetail(user.getId(), orderNo);
+    }
+
+    /**
+     * 查看用户订单列表
+     * @param session 会话对象
+     * @param pageNum 分页信息，当前页（默认值为1）
+     * @param pageSize 分页大小，每页容量（默认值为10）
+     * @return 通用响应对象
+     * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
+     */
+    @RequestMapping("list.do")
+    @ResponseBody
+    public ServerResponse list(HttpSession session,
+                               @RequestParam(value = "pageNum" ,defaultValue = "1") int pageNum,
+                               @RequestParam(value = "pageSize" ,defaultValue = "10") int pageSize){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null){ //判断当前用户是否已经登陆
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderList(user.getId(), pageNum, pageSize);
+    }
 
     /**
      * 支付接口

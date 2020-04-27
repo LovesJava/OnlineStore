@@ -37,6 +37,11 @@ public class CartServiceImpl implements ICartService {
         if (productId == null || count == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
+        Product product = productMapper.selectByPrimaryKey(productId);
+        //若产品的状态不是在售状态则抛出产品已经下架错误
+        if (product.getStatus() > Const.ProductStatusEnum.ON_SALE.getCode()){
+            return ServerResponse.createByErrorMessage("产品已经下架");
+        }
 
         Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
         System.out.println(cart);

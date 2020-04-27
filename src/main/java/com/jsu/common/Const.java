@@ -31,7 +31,8 @@ public class Const {
     }
 
     public enum ProductStatusEnum{  //产品销售状态枚举类
-        ON_SALE("在售", 1);
+        ON_SALE("在售", 1),
+        OFF_SHELF("下架", 2);
         private String value;
         private int code;
 
@@ -69,6 +70,16 @@ public class Const {
         public int getCode() {
             return code;
         }
+
+        //遍历枚举类的所有枚举对象，找对应的code的枚举就返回，找不到就抛出异常
+        public static OrderStatusEnum codeOf(int code){
+            for(OrderStatusEnum orderStatusEnum : values()){
+                if(orderStatusEnum.getCode() == code){
+                    return orderStatusEnum;
+                }
+            }
+            throw new RuntimeException("没有找到对应的枚举");
+        }
     }
 
     //支付宝回调的状态
@@ -98,6 +109,16 @@ public class Const {
         public int getCode() {
             return code;
         }
+
+        //遍历枚举类的所有枚举对象，找对应的code的枚举就返回，找不到就抛出异常
+        public static PayPlatformEnum codeOf(int code){
+            for(PayPlatformEnum payPlatformEnum : values()){
+                if(payPlatformEnum.getCode() == code){
+                    return payPlatformEnum;
+                }
+            }
+            throw new RuntimeException("没有找到对应的枚举");
+        }
     }
 
     //支付类型枚举类
@@ -119,13 +140,14 @@ public class Const {
             return code;
         }
 
+        //遍历枚举类的所有枚举对象，找对应的code的枚举就返回，找不到就抛出异常
         public static PaymentTypeEnum codeOf(int code){
             for(PaymentTypeEnum paymentTypeEnum : values()){
                 if(paymentTypeEnum.getCode() == code){
                     return paymentTypeEnum;
                 }
             }
-            throw new RuntimeException("么有找到对应的枚举");
+            throw new RuntimeException("没有找到对应的枚举");
         }
 
     }

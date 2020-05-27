@@ -169,7 +169,7 @@ public class OrderServiceImpl implements IOrderService {
         shippingVo.setReceiverDistrict(shipping.getReceiverDistrict());
         shippingVo.setReceiverMobile(shipping.getReceiverMobile());
         shippingVo.setReceiverZip(shipping.getReceiverZip());
-        shippingVo.setReceiverPhone(shippingVo.getReceiverPhone());
+        shippingVo.setReceiverPhone(shipping.getReceiverPhone());
         return shippingVo;
     }
 
@@ -374,7 +374,7 @@ public class OrderServiceImpl implements IOrderService {
         String outTradeNo = order.getOrderNo().toString();
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
-        String subject = new StringBuilder().append("啥都有卖商城扫码支付，订单号：").append(outTradeNo).toString();
+        String subject = new StringBuilder().append("松鼠商城扫码支付，订单号：").append(outTradeNo).toString();
 
         // (必填) 订单总金额，单位为元，不能超过1亿元
         // 如果同时传入了【打折金额】,【不可打折金额】,【订单总金额】三者,则必须满足如下条件:【订单总金额】=【打折金额】+【不可打折金额】
@@ -503,7 +503,7 @@ public class OrderServiceImpl implements IOrderService {
         String tradeStatus = params.get("trade_status"); //交易状态
         Order order = orderMapper.selectByOderNo(orderNo);
         if (order == null){
-            return ServerResponse.createByErrorMessage("不是啥都有卖商城的订单号，回调忽略");
+            return ServerResponse.createByErrorMessage("不是松鼠商城的订单号，回调忽略");
         }
         //判断订单状态，若是已支付以上的状态，则不需要处理支付宝回调了
         if (order.getStatus() >= Const.OrderStatusEnum.PAID.getCode()){

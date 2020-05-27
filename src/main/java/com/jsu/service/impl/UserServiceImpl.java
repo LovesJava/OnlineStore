@@ -108,7 +108,7 @@ public class UserServiceImpl implements IUserService {
             String forgetToken = UUID.randomUUID().toString();
             //把令牌设置到缓存中
             TokenCache.setKey(TokenCache.TOKEN_PREFIX+username, forgetToken);
-            return ServerResponse.createBySuccessMessage(forgetToken);
+            return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题答案错误");
     }
@@ -188,7 +188,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("找不到当前用户");
         }
         user.setPassword(StringUtils.EMPTY); //将查询出来的用户密码设置为空
-        return ServerResponse.createBySuccess("登录成功",user);
+        return ServerResponse.createBySuccess(user);
     }
 
     //后台校验用户是否为管理员

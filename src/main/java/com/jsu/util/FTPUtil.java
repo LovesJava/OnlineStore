@@ -65,8 +65,8 @@ public class FTPUtil {
                 ftpClient.setControlEncoding("UTF-8");
                 //设置文件类型为二进制类型
                 ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-                //打开本地的被动模式
-                ftpClient.enterLocalPassiveMode();
+/*                //打开本地的被动模式
+                ftpClient.enterLocalPassiveMode();*/
 
                 for (File file : fileList){
                     //根据文件集合内的每个文件对象创建文件输入流
@@ -77,6 +77,7 @@ public class FTPUtil {
             } catch (IOException e) {
                 logger.error("上传文件异常", e);
                 uploaded = false;
+                e.printStackTrace();
             } finally {
                 //关闭文件输入流
                 fileInputStream.close();
@@ -91,6 +92,8 @@ public class FTPUtil {
     private boolean connectServer(String ip, int port, String user, String password){
         boolean isSuccess = false; //是否登录成功
         ftpClient = new FTPClient();  //创建FTP客户端对象
+        //打开本地的被动模式(要在连接ftp服务器之前开启被动模式)
+        ftpClient.enterLocalPassiveMode();
         try {
             //连接FTP服务器ip
             ftpClient.connect(ip);

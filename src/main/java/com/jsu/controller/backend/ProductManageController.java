@@ -25,7 +25,7 @@ import java.util.Map;
 
 //后台的商品管理
 @Controller
-@RequestMapping("/manage/product")
+@RequestMapping("/manage/product/")
 public class ProductManageController {
 
     @Autowired

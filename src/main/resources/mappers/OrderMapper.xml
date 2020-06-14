@@ -224,4 +224,8 @@
     from mall_order
     order by create_time desc
   </select>
+
+  <select id="getOrderCount" resultType="int">
+    select count(id) from mall_order
+  </select>
 </mapper>

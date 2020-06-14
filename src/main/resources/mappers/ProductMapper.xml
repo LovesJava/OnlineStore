@@ -210,4 +210,8 @@
       </foreach>
     </if>
   </select>
+
+  <select id="getProductCount" resultType="int">
+    select count(id) from mall_product
+  </select>
 </mapper>

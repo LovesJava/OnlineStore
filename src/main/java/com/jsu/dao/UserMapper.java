@@ -3,6 +3,8 @@ package com.jsu.dao;
 import com.jsu.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -34,4 +36,6 @@ public interface UserMapper {
     int checkEmailByUserId(@Param("email")String email, @Param("userId")Integer UserId);
 
     int getUserCount();
+
+    List<User> getUserList();
 }

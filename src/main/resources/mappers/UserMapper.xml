@@ -206,4 +206,10 @@
   <select id="getUserCount" resultType="int">
     select count(id) from mall_user
   </select>
+
+  <select id="getUserList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from mall_user
+    order by id asc
+  </select>
 </mapper>

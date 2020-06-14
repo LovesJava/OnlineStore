@@ -1,5 +1,6 @@
 package com.jsu.service;
 
+import com.github.pagehelper.PageInfo;
 import com.jsu.common.ServerResponse;
 import com.jsu.pojo.User;
 
@@ -24,4 +25,6 @@ public interface IUserService {
     ServerResponse<User> getInformation(Integer userId);
 
     ServerResponse checkAdminRole(User user);
+
+    ServerResponse<PageInfo> getUserList(int pageNum, int pageSize);
 }

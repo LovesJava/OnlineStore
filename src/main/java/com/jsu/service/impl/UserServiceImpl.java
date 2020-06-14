@@ -1,5 +1,7 @@
 package com.jsu.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.jsu.common.Const;
 import com.jsu.common.ServerResponse;
 import com.jsu.common.TokenCache;
@@ -11,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service("iUserService")
@@ -191,6 +194,8 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createBySuccess(user);
     }
 
+
+    //backend
     //后台校验用户是否为管理员
     public ServerResponse checkAdminRole(User user){
         if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
@@ -199,5 +204,16 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByError();
     }
 
+    //查询所有用户信息(后台显示用户列表)
+    public ServerResponse<PageInfo> getUserList(int pageNum, int pageSize){
+        //startPage--start
+        PageHelper.startPage(pageNum, pageSize);
+        List<User> userList = userMapper.getUserList();
+
+        //pageHelper收尾
+        PageInfo pageResult = new PageInfo(userList);
+        pageResult.setList(userList);
+        return ServerResponse.createBySuccess(pageResult);
+    }
 
 }

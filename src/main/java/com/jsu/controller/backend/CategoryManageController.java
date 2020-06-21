@@ -34,7 +34,7 @@ public class CategoryManageController {
      * @return 通用的响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
-    @RequestMapping(value = "add_category.do", method = RequestMethod.GET)
+    @RequestMapping(value = "add_category.do")
     @ResponseBody
     public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
@@ -58,7 +58,7 @@ public class CategoryManageController {
      * @return 通用响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
-    @RequestMapping(value = "set_category_name.do", method = RequestMethod.GET)
+    @RequestMapping(value = "set_category_name.do")
     @ResponseBody
     public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categoryName){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
@@ -81,7 +81,7 @@ public class CategoryManageController {
      * @return 通用的响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
-    @RequestMapping(value = "get_category.do", method = RequestMethod.GET)
+    @RequestMapping(value = "get_category.do")
     @ResponseBody
     public ServerResponse getChildrenParallelCategory(HttpSession session,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
@@ -104,7 +104,7 @@ public class CategoryManageController {
      * @return 通用的响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
-    @RequestMapping(value = "get_deep_category.do", method = RequestMethod.GET)
+    @RequestMapping(value = "get_deep_category.do")
     @ResponseBody
     public ServerResponse getCategoryAndDeepChildrenCategory(HttpSession session,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);

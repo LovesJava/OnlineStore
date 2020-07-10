@@ -1,5 +1,6 @@
 package com.jsu.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,10 +10,8 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 //用于获取mall.properties文件的键值对
+@Slf4j
 public class PropertiesUtil {
-
-    //创建当前类的日志对象
-    private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 
     private static Properties props;
 
@@ -23,7 +22,7 @@ public class PropertiesUtil {
             //从resources文件夹下加载mall.properties文件（utf-8编码）
             props.load(new InputStreamReader(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName),"UTF-8"));
         } catch (IOException e) {
-            logger.error("配置文件读取异常",e);
+            log.error("配置文件读取异常",e);
         }
     }
 

@@ -1,7 +1,5 @@
 package com.jsu.util;
 
-import org.springframework.util.StringUtils;
-
 import java.security.MessageDigest;
 
 //MD5加密工具类

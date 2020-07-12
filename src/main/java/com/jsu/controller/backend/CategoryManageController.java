@@ -1,19 +1,21 @@
 package com.jsu.controller.backend;
 
-import com.jsu.common.Const;
 import com.jsu.common.ResponseCode;
 import com.jsu.common.ServerResponse;
 import com.jsu.pojo.User;
 import com.jsu.service.ICategoryService;
 import com.jsu.service.IUserService;
+import com.jsu.util.CookieUtil;
+import com.jsu.util.JsonUtil;
+import com.jsu.util.RedisPoolUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 //后台的商品分类管理
 @Controller
@@ -28,7 +30,7 @@ public class CategoryManageController {
 
     /**
      *  增加分类
-     * @param session 会话对象
+     * @param httpServletRequest 请求对象
      * @param categoryName 分类名称
      * @param parentId 若前端没有传递parentId值，则默认为0
      * @return 通用的响应对象
@@ -36,8 +38,17 @@ public class CategoryManageController {
      */
     @RequestMapping(value = "add_category.do")
     @ResponseBody
-    public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse addCategory(HttpServletRequest httpServletRequest, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId){
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        //通过loginToken从Redis中获取user序列化后的字符串
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        //将userJsonStr反序列化
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
+
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
         }
@@ -52,7 +63,7 @@ public class CategoryManageController {
 
     /**
      * 更新商品分类名称
-     * @param session 会话对象
+     * @param httpServletRequest 请求对象
      * @param categoryId 商品id
      * @param categoryName 商品名称
      * @return 通用响应对象
@@ -60,8 +71,17 @@ public class CategoryManageController {
      */
     @RequestMapping(value = "set_category_name.do")
     @ResponseBody
-    public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categoryName){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse setCategoryName(HttpServletRequest httpServletRequest, Integer categoryId, String categoryName){
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        //通过loginToken从Redis中获取user序列化后的字符串
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        //将userJsonStr反序列化
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
+
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
         }
@@ -76,15 +96,24 @@ public class CategoryManageController {
 
     /**
      * 获取当前id下的所有子节点（不包括子节点的子节点）
-     * @param session 会话对象
+     * @param httpServletRequest 请求对象
      * @param categoryId 商品id
      * @return 通用的响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
     @RequestMapping(value = "get_category.do")
     @ResponseBody
-    public ServerResponse getChildrenParallelCategory(HttpSession session,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse getChildrenParallelCategory(HttpServletRequest httpServletRequest,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        //通过loginToken从Redis中获取user序列化后的字符串
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        //将userJsonStr反序列化
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
+
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
         }
@@ -99,15 +128,24 @@ public class CategoryManageController {
 
     /**
      * 获取当前节点和其所有的子节点（包括子节点的子节点）
-     * @param session 会话对象
+     * @param httpServletRequest 请求对象
      * @param categoryId 商品id
      * @return 通用的响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
     @RequestMapping(value = "get_deep_category.do")
     @ResponseBody
-    public ServerResponse getCategoryAndDeepChildrenCategory(HttpSession session,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse getCategoryAndDeepChildrenCategory(HttpServletRequest httpServletRequest,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        //通过loginToken从Redis中获取user序列化后的字符串
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        //将userJsonStr反序列化
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
+
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录之后再操作");
         }

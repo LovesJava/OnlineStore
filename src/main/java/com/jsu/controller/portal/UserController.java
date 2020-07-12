@@ -30,7 +30,7 @@ public class UserController {
      * 用户登录接口
      * @param username 用户名
      * @param password 密码
-     * @param session 会话对象
+     * @param httpServletResponse 请求对象
      * @return 通用的响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
@@ -104,7 +104,6 @@ public class UserController {
     @RequestMapping(value = "get_user_info.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpServletRequest httpServletRequest){
-        //User user = (User)session.getAttribute(Const.CURRENT_USER);
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -163,7 +162,6 @@ public class UserController {
 
     /**
      * 用户重置密码(登录状态)
-     * @param session 会话对象
      * @param passwordOld 旧密码
      * @param passwordNew 新密码
      * @return 通用响应对象
@@ -171,8 +169,17 @@ public class UserController {
      */
     @RequestMapping(value = "reset_password.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> resetPassword(HttpSession session, String passwordOld, String passwordNew){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> resetPassword(HttpServletRequest httpServletRequest, String passwordOld, String passwordNew){
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        //通过loginToken从Redis中获取user序列化后的字符串
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        //将userJsonStr反序列化
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
+
         if (user == null){
             return ServerResponse.createByErrorMessage("用户未登录，请登录之后再操作");
         }
@@ -181,15 +188,24 @@ public class UserController {
 
     /**
      * 更新用户个人信息
-     * @param session 会话对象
+     * @param httpServletRequest 请求对象
      * @param user 用户对象
      * @return 通用响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
     @RequestMapping(value = "update_information.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> updateInformation(HttpSession session, User user){
-        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<User> updateInformation(HttpServletRequest httpServletRequest, HttpSession session, User user){
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        //通过loginToken从Redis中获取user序列化后的字符串
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        //将userJsonStr反序列化
+        User currentUser = JsonUtil.string2Obj(userJsonStr, User.class);
+
         if (currentUser == null){
             return ServerResponse.createByErrorMessage("用户未登录，请登录之后再操作");
         }
@@ -197,21 +213,31 @@ public class UserController {
         user.setUsername(currentUser.getUsername());
         ServerResponse<User> response = iUserService.updateInformation(user);
         if (response.isSuccess()){//如果更新个人信息成功了
-            session.setAttribute(Const.CURRENT_USER, response.getData());
+            response.getData().setUsername(currentUser.getUsername());
+            RedisPoolUtil.setEx(loginToken, JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return response;
     }
 
     /**
      * 获取用户详细信息
-     * @param session 会话对象
+     * @param httpServletRequest 请求对象
      * @return 通用响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
     @RequestMapping(value = "get_information.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> getInformation(HttpSession session){
-        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<User> getInformation(HttpServletRequest httpServletRequest){
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        //通过loginToken从Redis中获取user序列化后的字符串
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        //将userJsonStr反序列化
+        User currentUser = JsonUtil.string2Obj(userJsonStr, User.class);
+
         if (currentUser == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，需要强制登录");
         }

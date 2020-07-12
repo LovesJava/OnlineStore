@@ -4,11 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jsu.common.Const;
 import com.jsu.common.ServerResponse;
-import com.jsu.common.TokenCache;
 import com.jsu.dao.UserMapper;
 import com.jsu.pojo.User;
 import com.jsu.service.IUserService;
 import com.jsu.util.MD5Util;
+import com.jsu.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,8 +109,8 @@ public class UserServiceImpl implements IUserService {
         if (resultCount > 0){//说明问题和问题答案是这个用户的，并且正确
             //获取UUID令牌
             String forgetToken = UUID.randomUUID().toString();
-            //把令牌设置到缓存中
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX+username, forgetToken);
+            //把令牌设置到Redis缓存中,并设置有效期
+            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60*60*12);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题答案错误");
@@ -126,8 +126,8 @@ public class UserServiceImpl implements IUserService {
         if (validResponse.isSuccess()){
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-        //再次校验从缓存中取出来的token
-        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        //再次校验从Redis缓存中取出来的token
+        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)){
             return ServerResponse.createByErrorMessage("token无效或者过期");
         }

@@ -12,6 +12,9 @@ public class Const {
     public static final String EMAIL = "email";
     public static final String USERNAME = "username";
 
+    //token的前缀
+    public static final String TOKEN_PREFIX = "token_";
+
     //设置session的缓存时间常量
     public interface RedisCacheExtime{
         int REDIS_SESSION_EXTIME = 60 * 30; //30分钟

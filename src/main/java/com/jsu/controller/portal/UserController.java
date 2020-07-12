@@ -8,12 +8,14 @@ import com.jsu.service.IUserService;
 import com.jsu.util.CookieUtil;
 import com.jsu.util.JsonUtil;
 import com.jsu.util.RedisPoolUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -52,14 +54,20 @@ public class UserController {
 
     /**
      * 登出功能
-     * @param session 会话对象
      * @return 通用响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */
     @RequestMapping(value = "logout.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> logout(HttpSession session){
-        session.removeAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        //session.removeAttribute(Const.CURRENT_USER);
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        //删除loginToken这个cookie
+        CookieUtil.delLoginToken(httpServletRequest, httpServletResponse);
+        //删除Redis中这个cookie对应的值
+        RedisPoolUtil.del(loginToken);
+
         return ServerResponse.createBySuccess();
     }
 
@@ -96,8 +104,18 @@ public class UserController {
      */
     @RequestMapping(value = "get_user_info.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> getUserInfo(HttpSession session){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<User> getUserInfo(HttpServletRequest httpServletRequest){
+        //User user = (User)session.getAttribute(Const.CURRENT_USER);
+        //获取loginToken对应的值
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        //通过loginToken从Redis中获取user序列化后的字符串
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        //将userJsonStr反序列化
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
+
         if (user != null){
             return ServerResponse.createBySuccess(user);
         }

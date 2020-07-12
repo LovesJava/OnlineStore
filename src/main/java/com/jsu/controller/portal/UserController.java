@@ -98,7 +98,6 @@ public class UserController {
 
     /**
      * 获取登录用户的信息
-     * @param session 会话对象
      * @return 通用响应对象
      * ResponseBody : 返回的时候自动通过SpringMVC的jackson插件让返回值序列化为json
      */

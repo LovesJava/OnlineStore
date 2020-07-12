@@ -40,6 +40,7 @@ public class CookieUtil {
         Cookie ck = new Cookie(COOKIE_NAME, token);
         ck.setDomain(COOKIE_DOMAIN);
         ck.setPath("/");   //表示设置在跟目录
+        ck.setHttpOnly(true); //设置为http请求获取cookie，脚本不能获取cookie
         //如果是-1，表示永久，单位为秒
         //若这个属性不设置，则cookie不会写入硬盘，而是写在内存。只在当前页面有效
         ck.setMaxAge(60 * 60 * 24 * 365);

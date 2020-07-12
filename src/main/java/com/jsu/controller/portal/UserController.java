@@ -5,6 +5,7 @@ import com.jsu.common.ResponseCode;
 import com.jsu.common.ServerResponse;
 import com.jsu.pojo.User;
 import com.jsu.service.IUserService;
+import com.jsu.util.CookieUtil;
 import com.jsu.util.JsonUtil;
 import com.jsu.util.RedisPoolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,10 @@ public class UserController {
             //将user设置到session中
             //session.setAttribute(Const.CURRENT_USER, response.getData());
 
-            //将session设置到Redis中，并设置有效期
+            //将session的id写入到浏览器中
+            CookieUtil.writeLoginToken(httpServletResponse, session.getId());
+
+            //将session对应的用户对象设置到Redis中，并设置有效期
             RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return response;

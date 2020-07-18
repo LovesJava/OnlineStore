@@ -7,7 +7,7 @@ import com.jsu.service.ICategoryService;
 import com.jsu.service.IUserService;
 import com.jsu.util.CookieUtil;
 import com.jsu.util.JsonUtil;
-import com.jsu.util.RedisPoolUtil;
+import com.jsu.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,7 +45,7 @@ public class CategoryManageController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
 
@@ -78,7 +78,7 @@ public class CategoryManageController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
 
@@ -110,7 +110,7 @@ public class CategoryManageController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
 
@@ -142,7 +142,7 @@ public class CategoryManageController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
 

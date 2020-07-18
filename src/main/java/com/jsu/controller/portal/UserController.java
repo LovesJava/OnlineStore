@@ -7,7 +7,7 @@ import com.jsu.pojo.User;
 import com.jsu.service.IUserService;
 import com.jsu.util.CookieUtil;
 import com.jsu.util.JsonUtil;
-import com.jsu.util.RedisPoolUtil;
+import com.jsu.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,7 +47,7 @@ public class UserController {
             CookieUtil.writeLoginToken(httpServletResponse, session.getId());
 
             //将session对应的用户对象设置到Redis中，并设置有效期
-            RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+            RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return response;
     }
@@ -66,7 +66,7 @@ public class UserController {
         //删除loginToken这个cookie
         CookieUtil.delLoginToken(httpServletRequest, httpServletResponse);
         //删除Redis中这个cookie对应的值
-        RedisPoolUtil.del(loginToken);
+        RedisShardedPoolUtil.del(loginToken);
 
         return ServerResponse.createBySuccess();
     }
@@ -110,7 +110,7 @@ public class UserController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
 
@@ -176,7 +176,7 @@ public class UserController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
 
@@ -202,7 +202,7 @@ public class UserController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User currentUser = JsonUtil.string2Obj(userJsonStr, User.class);
 
@@ -214,7 +214,7 @@ public class UserController {
         ServerResponse<User> response = iUserService.updateInformation(user);
         if (response.isSuccess()){//如果更新个人信息成功了
             response.getData().setUsername(currentUser.getUsername());
-            RedisPoolUtil.setEx(loginToken, JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+            RedisShardedPoolUtil.setEx(loginToken, JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return response;
     }
@@ -234,7 +234,7 @@ public class UserController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User currentUser = JsonUtil.string2Obj(userJsonStr, User.class);
 

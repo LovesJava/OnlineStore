@@ -7,7 +7,7 @@ import com.jsu.pojo.User;
 import com.jsu.service.IUserService;
 import com.jsu.util.CookieUtil;
 import com.jsu.util.JsonUtil;
-import com.jsu.util.RedisPoolUtil;
+import com.jsu.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,7 +47,7 @@ public class UserManageController {
                 //将session的id写入到浏览器中
                 CookieUtil.writeLoginToken(httpServletResponse, session.getId());
                 //将session对应的用户对象设置到Redis中，并设置有效期
-                RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+                RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
                 return response;
             } else {
                 return ServerResponse.createByErrorMessage("不是管理员，无法登录");
@@ -76,7 +76,7 @@ public class UserManageController {
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         //将userJsonStr反序列化
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
 

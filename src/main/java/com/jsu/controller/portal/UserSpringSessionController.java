@@ -51,7 +51,11 @@ public class UserSpringSessionController {
      */
     @RequestMapping(value = "logout.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> logout(HttpSession session, HttpServletResponse httpServletResponse){
+    public ServerResponse<String> logout(HttpSession session){
+        //全局异常测试
+/*        int i = 0;
+        int j = 11 / i;*/
+
         session.removeAttribute(Const.CURRENT_USER);
         return ServerResponse.createBySuccess();
     }

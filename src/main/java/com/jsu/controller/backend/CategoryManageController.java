@@ -39,6 +39,7 @@ public class CategoryManageController {
     @RequestMapping(value = "add_category.do")
     @ResponseBody
     public ServerResponse addCategory(HttpServletRequest httpServletRequest, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId){
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -59,6 +60,9 @@ public class CategoryManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iCategoryService.addCategory(categoryName, parentId);
     }
 
     /**
@@ -72,6 +76,7 @@ public class CategoryManageController {
     @RequestMapping(value = "set_category_name.do")
     @ResponseBody
     public ServerResponse setCategoryName(HttpServletRequest httpServletRequest, Integer categoryId, String categoryName){
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -92,6 +97,9 @@ public class CategoryManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iCategoryService.updateCategoryName(categoryId, categoryName);
     }
 
     /**
@@ -104,6 +112,7 @@ public class CategoryManageController {
     @RequestMapping(value = "get_category.do")
     @ResponseBody
     public ServerResponse getChildrenParallelCategory(HttpServletRequest httpServletRequest,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -124,6 +133,9 @@ public class CategoryManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iCategoryService.getChildrenParallelCategory(categoryId);
     }
 
     /**
@@ -136,6 +148,7 @@ public class CategoryManageController {
     @RequestMapping(value = "get_deep_category.do")
     @ResponseBody
     public ServerResponse getCategoryAndDeepChildrenCategory(HttpServletRequest httpServletRequest,  @RequestParam(value = "categoryId", defaultValue = "0")Integer categoryId){
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -156,6 +169,9 @@ public class CategoryManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iCategoryService.selectCategoryAndChildrenById(categoryId);
     }
 
 }

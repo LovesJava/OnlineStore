@@ -40,6 +40,7 @@ public class OrderManageController {
     public ServerResponse orderList(HttpServletRequest httpServletRequest,
                                     @RequestParam(value = "pageNum" ,defaultValue = "1") int pageNum,
                                     @RequestParam(value = "pageSize" ,defaultValue = "10") int pageSize) {
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -60,6 +61,9 @@ public class OrderManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iOrderService.manageList(pageNum, pageSize);
     }
 
     /**
@@ -72,6 +76,7 @@ public class OrderManageController {
     @RequestMapping("detail.do")
     @ResponseBody
     public ServerResponse orderDetail(HttpServletRequest httpServletRequest,Long orderNo) {
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -92,6 +97,9 @@ public class OrderManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iOrderService.manageDetail(orderNo);
     }
 
     /**
@@ -106,6 +114,7 @@ public class OrderManageController {
     public ServerResponse orderSearch(HttpServletRequest httpServletRequest,Long orderNo,
                                       @RequestParam(value = "pageNum" ,defaultValue = "1") int pageNum,
                                       @RequestParam(value = "pageSize" ,defaultValue = "10") int pageSize) {
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -126,6 +135,9 @@ public class OrderManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iOrderService.manageSearch(orderNo, pageNum, pageSize);
     }
 
     /**
@@ -138,6 +150,7 @@ public class OrderManageController {
     @RequestMapping("send_goods.do")
     @ResponseBody
     public ServerResponse<String> orderSendGoods(HttpServletRequest httpServletRequest,Long orderNo) {
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -158,5 +171,8 @@ public class OrderManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iOrderService.manageSendGoods(orderNo);
     }
 }

@@ -36,6 +36,7 @@ public class StatisticController {
     @RequestMapping(value = "base_count.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse baseCount(HttpServletRequest httpServletRequest){
+        /*
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
@@ -56,5 +57,8 @@ public class StatisticController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iStatisticService.getCount();
     }
 }

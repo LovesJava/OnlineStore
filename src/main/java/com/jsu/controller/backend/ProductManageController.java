@@ -48,6 +48,7 @@ public class ProductManageController {
     @RequestMapping(value = "save.do")
     @ResponseBody
     public ServerResponse productSave(HttpServletRequest httpServletRequest, Product product){
+        /*
         //判断当前用户是否具有操作权限
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -68,6 +69,9 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iProductService.saveOrUpdateProduct(product);
     }
 
     /**
@@ -81,6 +85,7 @@ public class ProductManageController {
     @RequestMapping(value = "set_sale_status.do")
     @ResponseBody
     public ServerResponse setSaleStatus(HttpServletRequest httpServletRequest, Integer productId, Integer productStatus){
+        /*
         //判断当前用户是否具有操作权限
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -101,6 +106,9 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iProductService.setSaleStatus(productId, productStatus);
     }
 
     /**
@@ -113,6 +121,7 @@ public class ProductManageController {
     @RequestMapping(value = "detail.do")
     @ResponseBody
     public ServerResponse getDetail(HttpServletRequest httpServletRequest, Integer productId){
+        /*
         //判断当前用户是否具有操作权限
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -133,6 +142,9 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iProductService.manageProductDetail(productId);
     }
 
     /**
@@ -146,6 +158,7 @@ public class ProductManageController {
     @RequestMapping(value = "list.do")
     @ResponseBody
     public ServerResponse getList(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        /*
         //判断当前用户是否具有操作权限
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -166,6 +179,9 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iProductService.getProductList(pageNum, pageSize);
     }
 
     /**
@@ -181,6 +197,7 @@ public class ProductManageController {
     @RequestMapping(value = "search.do")
     @ResponseBody
     public ServerResponse productSearch(HttpServletRequest httpServletRequest, String productName, Integer productId, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        /*
         //判断当前用户是否具有操作权限
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -201,6 +218,9 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iProductService.searchProduct(productName, productId, pageNum, pageSize);
     }
 
     /**
@@ -213,6 +233,7 @@ public class ProductManageController {
     @RequestMapping(value = "upload.do")
     @ResponseBody
     public ServerResponse upload(HttpServletRequest httpServletRequest, @RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest request){
+        /*
         //判断当前用户是否具有操作权限
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -242,6 +263,19 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        //获取文件上传到服务器位置(非FTP服务器)
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = iFileService.upload(file, path);
+        //文件的URL地址
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
+
+        //返回一个HashMap集合存储文件名和文件URL地址
+        Map fileMap = Maps.newHashMap();
+        fileMap.put("uri", targetFileName);
+        fileMap.put("url", url);
+        return ServerResponse.createBySuccess(fileMap);
     }
 
     @RequestMapping(value = "richtext_img_upload.do")
@@ -250,6 +284,7 @@ public class ProductManageController {
                                  @RequestParam(value = "upload_file", required = false) MultipartFile file,
                                  HttpServletRequest request, HttpServletResponse response){
         Map resultMap = Maps.newHashMap(); //返回的map集合
+        /*
         //判断当前用户是否具有操作权限
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -293,6 +328,26 @@ public class ProductManageController {
             resultMap.put("msg","无权限操作");
             return resultMap;
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        //获取文件上传到服务器位置(非FTP服务器)
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = iFileService.upload(file, path);
+        if (StringUtils.isBlank(targetFileName)){
+            //若返回的目标文件名为空，则上传失败
+            resultMap.put("success", false);
+            resultMap.put("msg","文件上传失败");
+            return resultMap;
+        }
+
+        //文件的URL地址
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
+        resultMap.put("success", true);
+        resultMap.put("msg","文件上传成功");
+        resultMap.put("file_path", url); //文件上传成功，要返回文件的url地址
+        //上传成功，增加响应头信息
+        response.addHeader("Access-Control-Allow-Headers","X-File-Name");
+        return resultMap;
     }
 
 }

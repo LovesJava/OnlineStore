@@ -44,6 +44,7 @@ public class UserManageController {
             User user = response.getData();
             if (user.getRole() == Const.Role.ROLE_ADMIN){//若登录的用户是管理员
                 //session.setAttribute(Const.CURRENT_USER, user);
+
                 //将session的id写入到浏览器中
                 CookieUtil.writeLoginToken(httpServletResponse, session.getId());
                 //将session对应的用户对象设置到Redis中，并设置有效期
@@ -69,6 +70,7 @@ public class UserManageController {
     public ServerResponse getList(HttpServletRequest httpServletRequest,
                                   @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                   @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        /*
         //判断当前用户是否具有操作权限
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -89,5 +91,8 @@ public class UserManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        */
+        //全部通过拦截器验证是否登录以及权限验证
+        return iUserService.getUserList(pageNum, pageSize);
     }
 }

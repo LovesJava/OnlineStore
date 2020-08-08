@@ -30,6 +30,7 @@ import com.jsu.vo.ShippingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +113,7 @@ public class OrderServiceImpl implements IOrderService {
 
         orderVo.setPostage(order.getPostage());
         orderVo.setStatus(order.getStatus());
+        //设置订单描述字段
         orderVo.setStatusDesc(Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
 
         orderVo.setShippingId(order.getShippingId());
@@ -282,6 +284,7 @@ public class OrderServiceImpl implements IOrderService {
         //将状态更新到数据库
         int rowCount = orderMapper.updateByPrimaryKeySelective(updateOrder);
         if (rowCount > 0){
+            this.addProductStock(orderItemMapper.getByOrderNo(orderNo));
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
@@ -593,6 +596,36 @@ public class OrderServiceImpl implements IOrderService {
             }
         }
         return ServerResponse.createByErrorMessage("订单不存在");
+    }
+
+    //定时关单
+    public void closeOrder(int hour) {
+        Date closeDateTime = DateUtils.addHours(new Date(), -hour);
+        //获取需要关闭的订单
+        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatusEnum.NO_PAY.getCode(), DateTimeUtil.dateToStr(closeDateTime));
+
+        for (Order order : orderList) {
+            //获取订单详情（订单的所有商品列表）
+            List<OrderItem> orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
+            for (OrderItem orderItem : orderItemList){
+                //此处的查询语句一定要使用主键where条件，防止锁表，同时必须是支持MySQL的InnoDB引擎
+                Integer stock = productMapper.selectStockByProductId(orderItem.getProductId());
+
+                //若生成订单中的商品被删除了
+                if (stock == null){
+                    continue;
+                }
+
+                //关闭订单的逻辑处理（商品的库存数量要增加订单中的商品数量）
+                Product product = new Product();
+                product.setId(orderItem.getProductId());
+                product.setStock(stock + orderItem.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+            }
+            //修改订单状态
+            orderMapper.closeOrderByOrderId(order.getId());
+            log.info("关闭订单OrderNo：{}", order.getOrderNo());
+        }
     }
 
 }

@@ -27,4 +27,10 @@ public interface OrderMapper {
     List<Order> selectAllOrder();
 
     int getOrderCount();
+
+    //获取需要关闭的订单列表
+    List<Order> selectOrderStatusByCreateTime(@Param("status") Integer status, @Param("date") String date);
+
+    //关闭订单（改变订单的支付状态）
+    int closeOrderByOrderId(Integer id);
 }

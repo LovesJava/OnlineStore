@@ -228,4 +228,21 @@
   <select id="getOrderCount" resultType="int">
     select count(id) from mall_order
   </select>
+
+  <!-- 使用<![CDATA[]]> 对包裹的<进行转译 -->
+  <select id="selectOrderStatusByCreateTime" resultMap="BaseResultMap" parameterType="map">
+    SELECT <include refid="Base_Column_List"/>
+    from mall_order
+    where status = #{status}
+    <![CDATA[
+    and create_time <= #{date}
+    ]]>
+    order by create_time desc
+  </select>
+
+  <update id="closeOrderByOrderId" parameterType="int">
+    update mall_order
+    set status = 60
+    where id = #{id}
+  </update>
 </mapper>

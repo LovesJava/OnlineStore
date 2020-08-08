@@ -34,6 +34,7 @@ public class CloseOrderTask {
         log.info("关闭订单定时任务结束");
     }
 
+    @Scheduled(cron = "0 */1 * * * ?")//每一分钟执行(每1分钟的整数倍)
     public void closeOrderTaskV2(){
         log.info("关闭订单定时任务启动");
         //获取配置文件中分布式锁的超时时间
@@ -54,7 +55,7 @@ public class CloseOrderTask {
         RedisShardedPoolUtil.expire(lockName, 50);//设置有效期50秒，防止死锁，线上环境设置5秒即可
         log.info("获取{}，ThreadName：{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
         int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour", "2"));
-        iOrderService.closeOrder(hour);
+        //iOrderService.closeOrder(hour);
         RedisShardedPoolUtil.del(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);//释放锁
         log.info("释放{}，ThreadName：{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
         log.info("==================================");

@@ -1,7 +1,6 @@
 package com.jsu.task;
 
 import com.jsu.common.Const;
-import com.jsu.common.RedisShardedPool;
 import com.jsu.common.RedissonManager;
 import com.jsu.service.IOrderService;
 import com.jsu.util.PropertiesUtil;
@@ -76,7 +75,7 @@ public class CloseOrderTask {
      * 第三版定时任务，解决tomcat强制关闭，导致redis中的CLOSE_ORDER_TASK_LOCK永久存在，从而造成死锁的问题
      * 每一分钟都会执行一次，关闭以当前时间为准，2个小时之前下单了但未付款的订单
      */
-    //@Scheduled(cron = "0 */1 * * * ?")//每一分钟执行(每1分钟的整数倍)
+    @Scheduled(cron = "0 */1 * * * ?")//每一分钟执行(每1分钟的整数倍)
     public void closeOrderTaskV3(){
         log.info("关闭订单定时任务启动");
         //获取配置文件中锁的超时时间
@@ -115,7 +114,7 @@ public class CloseOrderTask {
      * 第四版定时任务，通过Redisson来实现分布式锁
      * 每一分钟都会执行一次，关闭以当前时间为准，2个小时之前下单了但未付款的订单
      */
-    @Scheduled(cron = "0 */1 * * * ?")//每一分钟执行(每1分钟的整数倍)
+    //@Scheduled(cron = "0 */1 * * * ?")//每一分钟执行(每1分钟的整数倍)
     public void closeOrderTaskV4(){
         //声明RLock
         RLock lock = redissonManager.getRedisson().getLock(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
@@ -125,7 +124,7 @@ public class CloseOrderTask {
             if(getLock = lock.tryLock(0, 5, TimeUnit.SECONDS)){
                 log.info("Redisson获取到分布式锁：{}，ThreadName：{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
                 int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour", "2"));
-                //iOrderService.closeOrder(hour);
+                iOrderService.closeOrder(hour);
             } else {
                 log.info("Redisson未获取到分布式锁：{}，ThreadName：{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
             }
@@ -146,7 +145,7 @@ public class CloseOrderTask {
         RedisShardedPoolUtil.expire(lockName, 5);//设置有效期50秒，防止死锁，线上环境设置5秒即可
         log.info("获取{}，ThreadName：{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
         int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour", "2"));
-        //iOrderService.closeOrder(hour);
+        iOrderService.closeOrder(hour);
         RedisShardedPoolUtil.del(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);//释放锁
         log.info("释放{}，ThreadName：{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
         log.info("==================================");

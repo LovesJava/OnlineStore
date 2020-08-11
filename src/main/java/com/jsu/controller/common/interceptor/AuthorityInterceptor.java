@@ -2,6 +2,7 @@ package com.jsu.controller.common.interceptor;
 
 import com.google.common.collect.Maps;
 import com.jsu.common.Const;
+import com.jsu.common.ResponseCode;
 import com.jsu.common.ServerResponse;
 import com.jsu.pojo.User;
 import com.jsu.util.CookieUtil;
@@ -98,7 +99,7 @@ public class AuthorityInterceptor implements HandlerInterceptor {
                     //此时返回resultMap序列化后的json字符串
                     out.print(JsonUtil.obj2String(resultMap));
                 } else {
-                    out.print(JsonUtil.obj2String(ServerResponse.createByErrorMessage("拦截器拦截，用户未登录")));
+                    out.print(JsonUtil.obj2String(ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "拦截器拦截，用户未登录")));
                 }
             }
             //非管理员用户操作

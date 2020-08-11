@@ -48,7 +48,7 @@ public class OrderController {
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
-            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -74,7 +74,7 @@ public class OrderController {
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
-            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -99,7 +99,7 @@ public class OrderController {
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
-            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -126,7 +126,7 @@ public class OrderController {
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
-            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -155,7 +155,7 @@ public class OrderController {
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
-            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -183,7 +183,7 @@ public class OrderController {
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
-            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -259,7 +259,7 @@ public class OrderController {
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
-            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);

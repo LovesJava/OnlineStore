@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 public class CookieUtil {
 
     //配置Cookie的Domain为一级域名
-    private final static String COOKIE_DOMAIN = ".guangping.store";
+    public final static String COOKIE_DOMAIN = "www.guangping.store";
+    public final static String COOKIE_DOMAIN_ADMIN = "admin.guangping.store";
     //写入Redis的cookie的key
     private final static String COOKIE_NAME = "mall_login_token";
 
@@ -36,9 +37,9 @@ public class CookieUtil {
     }
 
     //写入cookie
-    public static void writeLoginToken(HttpServletResponse response, String token){
+    public static void writeLoginToken(HttpServletResponse response, String token, String cookie_domain){
         Cookie ck = new Cookie(COOKIE_NAME, token);
-        ck.setDomain(COOKIE_DOMAIN);
+        ck.setDomain(cookie_domain);
         ck.setPath("/");   //表示设置在跟目录
         ck.setHttpOnly(true); //设置为http请求获取cookie，脚本不能获取cookie
         //如果是-1，表示永久，单位为秒
@@ -50,12 +51,12 @@ public class CookieUtil {
     }
 
     //删除浏览器中的cookie
-    public static void delLoginToken(HttpServletRequest request, HttpServletResponse response){
+    public static void delLoginToken(HttpServletRequest request, HttpServletResponse response, String cookie_domain){
         Cookie[] cks = request.getCookies();
         if (cks != null){
             for (Cookie ck : cks){
                 if (StringUtils.equals(ck.getName(), COOKIE_NAME)){
-                    ck.setDomain(COOKIE_DOMAIN);
+                    ck.setDomain(cookie_domain);
                     ck.setPath("/");
                     //设置为0，表示删除此cookie
                     ck.setMaxAge(0);

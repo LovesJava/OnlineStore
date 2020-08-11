@@ -1,6 +1,7 @@
 package com.jsu.controller.portal;
 
 import com.jsu.common.Const;
+import com.jsu.common.ResponseCode;
 import com.jsu.common.ServerResponse;
 import com.jsu.pojo.User;
 import com.jsu.service.IUserService;
@@ -73,6 +74,6 @@ public class UserSpringSessionController {
         if (user != null){
             return ServerResponse.createBySuccess(user);
         }
-        return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
     }
 }

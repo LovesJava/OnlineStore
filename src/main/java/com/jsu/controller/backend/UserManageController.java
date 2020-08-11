@@ -46,7 +46,7 @@ public class UserManageController {
                 //session.setAttribute(Const.CURRENT_USER, user);
 
                 //将session的id写入到浏览器中
-                CookieUtil.writeLoginToken(httpServletResponse, session.getId());
+                CookieUtil.writeLoginToken(httpServletResponse, session.getId(), CookieUtil.COOKIE_DOMAIN_ADMIN);
                 //将session对应的用户对象设置到Redis中，并设置有效期
                 RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
                 return response;
@@ -75,7 +75,7 @@ public class UserManageController {
         //获取loginToken对应的值
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(loginToken)){
-            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，无法获取当前用户的信息");
         }
         //通过loginToken从Redis中获取user序列化后的字符串
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
